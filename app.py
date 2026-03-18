@@ -700,8 +700,13 @@ elif page == "💬 Outreach":
                 st.divider()
                 col1, col2 = st.columns(2)
                 with col1:
-                    export_text = "\n\n".join([f"{'[SDR]' if m['role']=='sdr' else f'[{contact[\"name\"]}]'}: {m['content']}" for m in convo])
-                    st.download_button("📥 Export Conversation", export_text, file_name=f"outreach_{contact['name'].replace(' ','_')}_{datetime.now().strftime('%Y%m%d')}.txt", mime="text/plain")
+                    contact_name = contact["name"]
+                    lines = []
+                    for m in convo:
+                        sender = "[SDR]" if m["role"] == "sdr" else f"[{contact_name}]"
+                        lines.append(f"{sender}: {m['content']}")
+                    export_text = "\n\n".join(lines)
+                    st.download_button("📥 Export Conversation", export_text, file_name=f"outreach_{contact_name.replace(' ','_')}_{datetime.now().strftime('%Y%m%d')}.txt", mime="text/plain")
                 with col2:
                     if st.button("🗑️ Reset Conversation"):
                         st.session_state.conversations[selected_cid] = []
